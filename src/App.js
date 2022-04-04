@@ -35,40 +35,41 @@ function App() {
     if (started) {
       const fullInterval = setInterval(() => {
         console.log("starting repetition");
+        let currLog = log;
         let newRand = Math.floor(Math.random() * 3);
-        let newLog;
+        currLog.push(newRand);
+        console.log(currLog);
 
-        if (newRand === log[log.length - 1]) {
-          newLog = log.push(newRand);
-          if (newLog.length >= 3) {
-            let newNewRand = Math.floor(Math.random() * 2);
-
-            if (newRand === 0) {
-              if (newNewRand === 0) {
-                newRand = 1;
-              } else {
-                newRand = 2;
-              }
-            } else if (newRand === 1) {
-              if (newNewRand === 0) {
-                newRand = 0;
-              } else {
-                newRand = 2;
-              }
+        let currLen = currLog.length;
+        if (
+          currLen > 3 &&
+          currLog[currLen - 1] === currLog[currLen - 2] &&
+          currLog[currLen - 1] === currLog[currLen - 3]
+        ) {
+          let newNewRand = Math.floor(Math.random() * 2);
+          if (newRand === 0) {
+            if (newNewRand === 0) {
+              newRand = 1;
             } else {
-              if (newNewRand === 0) {
-                newRand = 0;
-              } else {
-                newRand = 1;
-              }
+              newRand = 2;
             }
-            newLog = [newRand];
+          } else if (newRand === 1) {
+            if (newNewRand === 0) {
+              newRand = 0;
+            } else {
+              newRand = 2;
+            }
+          } else {
+            if (newNewRand === 0) {
+              newRand = 1;
+            } else {
+              newRand = 2;
+            }
           }
-        } else {
-          newLog = [newRand];
+          currLog = [newRand];
         }
 
-        setLog(newLog);
+        setLog(currLog);
 
         const timer = setTimeout(() => {
           console.log("Counting before get Ready");
