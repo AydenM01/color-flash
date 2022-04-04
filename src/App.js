@@ -9,11 +9,12 @@ function App() {
   const [waitTime, setWaitTime] = useState(1);
   const [started, setStarted] = useState(false);
   const [rand, setRand] = useState(0);
+  const [log, setLog] = useState([]);
 
   const [go] = useSound("/go.mp3", { volume: 1 });
   const [stop] = useSound("/stop.mp3", { volume: 1 });
   const [pause] = useSound("/pause.mp3", { volume: 1 });
-  const [ready] = useSound("/ready.mp3", { volume: 1 });
+  const [ready] = useSound("/readyTone.mp3", { volume: 1 });
 
   const handleStartChange = (value) => {
     console.log("changing start time to " + value);
@@ -35,6 +36,39 @@ function App() {
       const fullInterval = setInterval(() => {
         console.log("starting repetition");
         let newRand = Math.floor(Math.random() * 3);
+        let newLog;
+
+        if (newRand === log[log.length - 1]) {
+          newLog = log.push(newRand);
+          if (newLog.length >= 3) {
+            let newNewRand = Math.floor(Math.random() * 2);
+
+            if (newRand === 0) {
+              if (newNewRand === 0) {
+                newRand = 1;
+              } else {
+                newRand = 2;
+              }
+            } else if (newRand === 1) {
+              if (newNewRand === 0) {
+                newRand = 0;
+              } else {
+                newRand = 2;
+              }
+            } else {
+              if (newNewRand === 0) {
+                newRand = 0;
+              } else {
+                newRand = 1;
+              }
+            }
+            newLog = [newRand];
+          }
+        } else {
+          newLog = [newRand];
+        }
+
+        setLog(newLog);
 
         const timer = setTimeout(() => {
           console.log("Counting before get Ready");
