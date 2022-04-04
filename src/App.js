@@ -77,8 +77,7 @@ function App() {
   const repetition = () => {
     console.log("starting repetition");
     console.log(log);
-    //let newRand = Math.floor(Math.random() * 3);
-    let newRand = 0;
+    let newRand = Math.floor(Math.random() * 3);
     let nextColor;
 
     if (checkForTriple(newRand)) {
