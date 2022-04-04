@@ -39,69 +39,91 @@ function App() {
     setStarted(false);
   };
 
+  const checkForTriple = (currLog) => {
+    console.log("checking for triple");
+    let currLen = log.length;
+    return (
+      currLen > 3 &&
+      currLog[currLen - 1] === currLog[currLen - 2] &&
+      currLog[currLen - 1] === currLog[currLen - 3]
+    );
+  };
+
+  const handleTriple = (num) => {
+    let newRand = Math.floor(Math.random() * 2);
+    if (num === 0) {
+      if (newRand === 0) {
+        return 1;
+      } else {
+        return 2;
+      }
+    } else if (num === 1) {
+      if (newRand === 0) {
+        return 0;
+      } else {
+        return 2;
+      }
+    } else {
+      if (newRand === 0) {
+        return 0;
+      } else {
+        return 1;
+      }
+    }
+  };
+
+  const repetition = () => {
+    console.log("starting repetition");
+    let currLog = log;
+    let newRand = Math.floor(Math.random() * 3);
+    currLog.push(newRand);
+
+    if (checkForTriple(currLog)) {
+      console.log("triple detected");
+      newRand = handleTriple(newRand);
+      console.log("changed new rand");
+      currLog = [newRand];
+    }
+
+    setLog(currLog);
+
+    const timer1 = setTimeout(() => {
+      console.log("Counting before get Ready");
+      ready();
+    }, startTime * 1000);
+
+    setTimer1(timer1);
+
+    const timer2 = setTimeout(() => {
+      console.log("Counting before g/s/p");
+      if (newRand == 0) {
+        go();
+      } else if (newRand == 1) {
+        stop();
+      } else {
+        pause();
+      }
+      setRand(newRand);
+    }, (startTime + waitTime) * 1000);
+
+    setTimer2(timer2);
+  };
+
   useEffect(() => {
     console.log("use effect called");
     if (started) {
+      repetition();
+
       const fullInterval = setInterval(() => {
-        setFullInterval(fullInterval);
-        console.log("starting repetition");
-        let currLog = log;
-        let newRand = Math.floor(Math.random() * 3);
-        currLog.push(newRand);
-        console.log(currLog);
-
-        let currLen = currLog.length;
-        if (
-          currLen > 3 &&
-          currLog[currLen - 1] === currLog[currLen - 2] &&
-          currLog[currLen - 1] === currLog[currLen - 3]
-        ) {
-          let newNewRand = Math.floor(Math.random() * 2);
-          if (newRand === 0) {
-            if (newNewRand === 0) {
-              newRand = 1;
-            } else {
-              newRand = 2;
-            }
-          } else if (newRand === 1) {
-            if (newNewRand === 0) {
-              newRand = 0;
-            } else {
-              newRand = 2;
-            }
-          } else {
-            if (newNewRand === 0) {
-              newRand = 1;
-            } else {
-              newRand = 2;
-            }
-          }
-          currLog = [newRand];
-        }
-
-        setLog(currLog);
-
-        const timer1 = setTimeout(() => {
-          setTimer1(timer1);
-          console.log("Counting before get Ready");
-          ready();
-        }, startTime * 1000);
-
-        const timer2 = setTimeout(() => {
-          setTimer2(timer2);
-          console.log("Counting before g/s/p");
-          if (newRand == 0) {
-            go();
-          } else if (newRand == 1) {
-            stop();
-          } else {
-            pause();
-          }
-          setRand(newRand);
-        }, (startTime + waitTime) * 1000);
+        repetition();
       }, (startTime + waitTime) * 1000);
 
-      return () => clearInterval(fullInterval);
+      setFullInterval(fullInterval);
+
+      return () => {
+        clearInterval(fullInterval);
+        setFullInterval(null);
+      };
     } else {
       if (fullIntervalState) {
         clearInterval(fullIntervalState);
