@@ -39,14 +39,16 @@ function App() {
     setStarted(false);
   };
 
-  const checkForTriple = (currLog) => {
+  const checkForTriple = (num) => {
     console.log("checking for triple");
     let currLen = log.length;
-    return (
-      currLen > 3 &&
-      currLog[currLen - 1] === currLog[currLen - 2] &&
-      currLog[currLen - 1] === currLog[currLen - 3]
-    );
+    let check =
+      currLen >= 2 && num === log[currLen - 1] && num === log[currLen - 2];
+
+    if (check) {
+      console.log("triple found!");
+      return true;
+    }
   };
 
   const handleTriple = (num) => {
@@ -74,18 +76,19 @@ function App() {
 
   const repetition = () => {
     console.log("starting repetition");
-    let currLog = log;
-    let newRand = Math.floor(Math.random() * 3);
-    currLog.push(newRand);
+    console.log(log);
+    //let newRand = Math.floor(Math.random() * 3);
+    let newRand = 0;
+    let nextColor;
 
-    if (checkForTriple(currLog)) {
+    if (checkForTriple(newRand)) {
       console.log("triple detected");
-      newRand = handleTriple(newRand);
-      console.log("changed new rand");
-      currLog = [newRand];
+      nextColor = handleTriple(newRand);
+    } else {
+      nextColor = newRand;
     }
 
-    setLog(currLog);
+    log.push(nextColor);
 
     const timer1 = setTimeout(() => {
       console.log("Counting before get Ready");
@@ -96,14 +99,14 @@ function App() {
 
     const timer2 = setTimeout(() => {
       console.log("Counting before g/s/p");
-      if (newRand == 0) {
+      if (nextColor === 0) {
         go();
-      } else if (newRand == 1) {
+      } else if (nextColor === 1) {
         stop();
       } else {
         pause();
       }
-      setRand(newRand);
+      setRand(nextColor);
     }, (startTime + waitTime) * 1000);
 
     setTimer2(timer2);
