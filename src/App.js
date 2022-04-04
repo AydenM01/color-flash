@@ -10,6 +10,9 @@ function App() {
   const [started, setStarted] = useState(false);
   const [rand, setRand] = useState(0);
   const [log, setLog] = useState([]);
+  const [fullIntervalState, setFullInterval] = useState(null);
+  const [timeout1, setTimer1] = useState(null);
+  const [timeout2, setTimer2] = useState(null);
 
   const [go] = useSound("/go.mp3", { volume: 1 });
   const [stop] = useSound("/stop.mp3", { volume: 1 });
@@ -31,9 +34,16 @@ function App() {
     setStarted(true);
   };
 
+  const handleStop = () => {
+    console.log("stopping");
+    setStarted(false);
+  };
+
   useEffect(() => {
+    console.log("use effect called");
     if (started) {
       const fullInterval = setInterval(() => {
+        setFullInterval(fullInterval);
         console.log("starting repetition");
         let currLog = log;
         let newRand = Math.floor(Math.random() * 3);
@@ -71,12 +81,14 @@ function App() {
 
         setLog(currLog);
 
-        const timer = setTimeout(() => {
+        const timer1 = setTimeout(() => {
+          setTimer1(timer1);
           console.log("Counting before get Ready");
           ready();
         }, startTime * 1000);
 
         const timer2 = setTimeout(() => {
+          setTimer2(timer2);
           console.log("Counting before g/s/p");
           if (newRand == 0) {
             go();
@@ -90,6 +102,19 @@ function App() {
       }, (startTime + waitTime) * 1000);
 
       return () => clearInterval(fullInterval);
+    } else {
+      if (fullIntervalState) {
+        clearInterval(fullIntervalState);
+        setFullInterval(null);
+      }
+      if (timeout1) {
+        clearTimeout(timeout1);
+        setTimer1(null);
+      }
+      if (timeout2) {
+        clearTimeout(timeout2);
+        setTimer2(null);
+      }
     }
   }, [started]);
 
@@ -99,6 +124,7 @@ function App() {
         type="number"
         label="Start Time (seconds)"
         onChange={(e) => handleStartChange(e.target.value)}
+        style={{}}
       ></TextField>
 
       <TextField
@@ -107,10 +133,24 @@ function App() {
         onChange={(e) => handleWaitChange(e.target.value)}
       ></TextField>
 
-      <Button variant="contained" onClick={handleStart}>
-        {" "}
-        Start{" "}
-      </Button>
+      {started ? (
+        <Button
+          color="error"
+          variant="contained"
+          onClick={handleStop}
+          style={{ padding: 15 }}
+        >
+          Stop
+        </Button>
+      ) : (
+        <Button
+          variant="contained"
+          onClick={handleStart}
+          style={{ padding: 15 }}
+        >
+          Start
+        </Button>
+      )}
 
       {rand === 0 && (
         <Box
